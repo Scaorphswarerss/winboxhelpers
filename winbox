@@ -1,0 +1,16 @@
+#!/bin/sh
+
+export WINEPREFIX="${WINBOX_HOME:-"${XDG_DATA_HOME:-"${HOME}/.local/share"}/winbox"}/wine"
+export WINEARCH=win64
+export WINEDLLOVERRIDES="mscoree,mshtml=" # disable mono
+export WINEDEBUG=-all
+if [ ! -d "${WINEPREFIX}" ] ; then
+   mkdir -p "${WINEPREFIX}"
+   mkdir -p "${WINEPREFIX}/drive_c/windows/Fonts/"
+   cd "${WINEPREFIX}/drive_c/windows/Fonts/"
+   echo "[+] We now download Tahoma font fix for mess up winbox fonts."
+   curl https://raw.githubusercontent.com/Scaorphswarerss/winboxhelpers/master/tahoma.tar | tar -x
+   wineboot -u
+fi
+
+wine /usr/share/winbox/winbox.exe "$@"
